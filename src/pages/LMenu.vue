@@ -1,15 +1,47 @@
 <template>
   <div class="card flex justify-center">
-    <Menu :model="items"/>
+    <Menu :model="items">
+      <template #item="{ item, props }">
+        <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+          <a v-ripple :href="href" v-bind="props.action" @click="navigate">
+            <span :class="item.icon"/>
+            <span class="ml-2">{{ item.label }}</span>
+          </a>
+        </router-link>
+        <a v-else v-ripple :href="item.url" :target="item.target" v-bind="props.action">
+          <span :class="item.icon"/>
+          <span class="ml-2">{{ item.label }}</span>
+        </a>
+      </template>
+    </Menu>
   </div>
 </template>
 
 <script setup>
 import {ref} from "vue";
+import {useRouter} from 'vue-router';
 import Menu from 'primevue/menu';
 
+
+const router = useRouter();
+
 const items = ref([
-  {label: 'New', icon: 'pi pi-plus'},
-  {label: 'Search', icon: 'pi pi-search'}
+  {
+    label: 'Router Link',
+    icon: 'pi pi-palette',
+    route: '/theming/unstyled'
+  },
+  {
+    label: 'Programmatic',
+    icon: 'pi pi-link',
+    command: () => {
+      router.push('/introduction');
+    }
+  },
+  {
+    label: 'External',
+    icon: 'pi pi-home',
+    url: 'https://vuejs.org/'
+  }
 ]);
 </script>
